@@ -1,0 +1,8 @@
+[server]
+ip = "127.0.0.1"
+port = "80"
+tls = "true"
+baseURI = "https://127.0.0.1"
+
+[apikey]
+transapikey = ""
