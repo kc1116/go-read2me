@@ -26,4 +26,8 @@ type Res struct {
 //Routes slice of routes that are registered with the mux router. All new routes can be defined here.
 type Routes []Route
 
-var routes = Routes{}
+var routes = Routes{
+	Route{
+		"Turn some text into a .mp3 file", "POST", "/read", read,
+	},
+}
