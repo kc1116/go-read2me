@@ -17,17 +17,11 @@ type Route struct {
 	HandlerFunc http.HandlerFunc
 }
 
-//Res struct to be used when responding with json on request
-type Res struct {
-	Status  int8        `json:"status"`
-	Message interface{} `json:"message"`
-}
-
 //Routes slice of routes that are registered with the mux router. All new routes can be defined here.
 type Routes []Route
 
 var routes = Routes{
 	Route{
-		"Turn some text into a .mp3 file", "POST", "/read", read,
+		"Turn some text into a .mp3 file", "POST", "/synthesize/plaintext", plainText,
 	},
 }

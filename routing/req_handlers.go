@@ -1,30 +1,45 @@
 package routing
 
-import "net/http"
+import (
+	"bytes"
+	"encoding/json"
+	"log"
+	"net/http"
 
-//MaxFileSize is max size for file uploads
-const MaxFileSize = 2 * 1024 * 1024
+	"github.com/kc1116/go-read2me/api"
+)
 
-// addImage is the request handler for the /add-image
-// responds with a json object
-// {status:"500", message: error message}
-// {status:"200", message: current path to file uploaded}
-func read(w http.ResponseWriter, r *http.Request) {
-	// the FormFile function takes in the POST input id file check size
+func plainText(w http.ResponseWriter, r *http.Request) {
+	toSynthesize := r.FormValue("toSynthesize")
+	voiceID := r.FormValue("voiceID")
 
-	/*text := r.FormValue("text")
-
-	// stream straight to client(browser)
-	w.Header().Set("Content-type", "audio/mpeg")
-
-	if _, err := b.WriteTo(w); err != nil { // <----- here!
-		fmt.Fprintf(w, "%s", err)
+	if len(toSynthesize) < 1 || len(voiceID) < 1 {
+		http.Error(w, "Invalid request.", http.StatusBadRequest)
+		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(Res{"200", newImgLoc}); err != nil {
-		log.Println("JSON encoder error: " + err.Error())
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}*/
+	results := api.SynthesizeText(toSynthesize, voiceID)
+
+	if results.Error == nil && results.Status == 200 {
+
+		b := bytes.NewBuffer(results.Audio)
+		if _, err := b.WriteTo(w); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-type", "audio/mpeg")
+
+		if err := json.NewEncoder(w).Encode(results); err != nil {
+			log.Println("JSON encoder error: " + err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+
+	} else {
+		if err := json.NewEncoder(w).Encode(results); err != nil {
+			log.Println("JSON encoder error: " + err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
 
 }

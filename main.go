@@ -1,11 +1,11 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/kc1116/go-read2me/parse"
-	"github.com/kc1116/go-read2me/read"
+	"github.com/kc1116/go-read2me/routing"
 )
 
 func main() {
@@ -15,13 +15,14 @@ func main() {
 	}
 
 	log.Println(text)*/
-	txtParser := new(parse.TxtParser)
+	//txtParser := new(parse.TxtParser)
 	//txtParser.Parse("./parse/test.txt")
 	//read.GetVoices("en-US")
-	read.Read(txtParser.Parse("./parse/test.txt"), "Kendra")
+	//read.Read(txtParser.Parse("./parse/test.txt"), "Kendra")
 
-	//router := routing.NewRouter()
-	//log.Fatal(http.ListenAndServe("3000", &MyServer{router}))
+	router := routing.NewRouter()
+	log.Println("Gophers working on port: 3000")
+	log.Fatal(http.ListenAndServe(":3000", &MyServer{router}))
 
 }
 
